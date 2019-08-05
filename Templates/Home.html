@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/Static/CSS/Main.css">
+    <title>Hello, world!</title>
+  </head>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
+  <script>
+    var ws = ws = new WebSocket("ws://"+window.location.host+"/ws");
+    $(window).load(function() {
+      // Animate loader off screen
+      $(".se-pre-con").fadeOut("slow");;
+    });
+  </script>
+  <body>
+    <div class="se-pre-con">
+        <h1 class="text-center">&#60;<b>Master</b>Mind.io&#62;</h1>
+    </div>
+    <form autocomplete="off" id="UserForm" class="fixed-top text-center mt-3">
+      <h3><input id="UserName" class="text-center" placeholder="UserName"></h3>
+    </form>
+    <table class="h-100 container align-text-middle text-center" id="Card" style="width:400px">
+      <tbody>
+        <tr>
+          <td class="align-middle">
+            <div class="card">
+              <div class="card-body">
+                <h1 class="card-title">&#60;<b>Master</b>Mind.io&#62;</h1>
+                <a href="Game/Create" onclick="NewGame()" class="btn btn-primary m-3" >
+                  <h3>
+                    New Game
+                  </h3>
+                </a>
+                <a href="Join" class="btn btn-primary m-3" >
+                  <h3>
+                    Join Game
+                  </h3>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <footer class="fixed-bottom text-center">
+      <p class="mb-0">&copy;2019 James Prince SPS-IPT</p>
+      <a href="#">
+        <p>Help<p>
+      </a>
+    </footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/Static/Javascript/jquery.color.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/Static/Javascript/Main.js"></script>
+  </body>
+</html>
