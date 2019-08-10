@@ -1,5 +1,19 @@
-Colours = ["red", "orange", "yellow", "green","blue", "purple", "pink", "brown"]
+import sys
+import getopt
+from tinydb import TinyDB, Query
+import time
+Colours = ["red", "orange", "yellow", "green",
+           "blue", "purple", "pink", "brown"]
 Objects = []
+
+
+def Debug(*input):
+    if "-d" in sys.argv[1:] or "--degug" in sys.argv[1:]:
+        if len(input) > 0:
+            print(*input)
+        return True
+    return False
+
 
 class GameEngine():
     def __init__(self, GamePin):
@@ -12,9 +26,9 @@ class GameEngine():
     def CreateGame(self, Length=4, NoC=4, Grade="3-4", UserID, Team):
         self.GamePin = CreateUniqID(5)
         self.req = query.GamePin == self.GamePin
-        self.liveInput = [Colours[i] for i in range(0,Length)]
-        GameTB.insert({"GamePin":self.GamePin, "Code": [random.choice(self.Colours) for i in range(0, Length)], "AvailableColours": NoC, "Grade":Grade, "Creation": time.time(), "Playing": False, "Team": Team})
-
+        self.liveInput = [Colours[i] for i in range(0, Length)]
+        GameTB.insert({"GamePin": self.GamePin, "Code": [random.choice(self.Colours) for i in range(
+            0, Length)], "AvailableColours": NoC, "Grade": Grade, "Creation": time.time(), "Playing": False, "Team": Team})
 
     def play(self, UserID, ICode, Code=None):
         Code = Code if Code else GameTB.get(self.req)["Code"]
@@ -30,6 +44,7 @@ class GameEngine():
             if ICode[i] in Code and not done:
                 Code[Code.index(ICode[i])] = ICode[i].upper()
         print(ICode, Code)
+        # add the Turn to the TurnTB
         return (UserID, ICode, Code.count(None), len([i for i in list(filter(None, Code)) if i.isupper()]))
 
     def Turns(self, UserID):
@@ -38,8 +53,14 @@ class GameEngine():
         else:
             return TurnTB.search(self.req)
 
+
 def GetObject(self, GamePin):
-    return Objects[[Object.GamePin for Object in Objects].index(GamePin)]
+    return [Object for Object in Objects if Object.GamePin == GamePin]
+
+
+def GetWebSocket(self, GamePin, UserID):
+    return [User for User in GetObject(GamePin) if User.UserID == UserID][0]
+
 
 def CreateUniqID(length):
     id = ''.join([random.choice(string.ascii_letters + string.digits)
@@ -51,13 +72,9 @@ def CreateUniqID(length):
 
 
 if __name__ == "__main__":
-    from tinydb import TinyDB, Query
-    import time
     DB = TinyDB('Database.json')
     UserTB = DB.table("UserID")
     GameTB = DB.table("GamesPins")
     TurnTB = DB.table("Turns")
     query = Query()
     GameEngine()
-    while True:
-        if
