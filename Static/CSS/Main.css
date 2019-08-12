@@ -13,3 +13,8 @@ html, body{
   z-index: 9999;
   background: url(/Static/Images/Loading.gif) center no-repeat #DBDBDB;
 }
+#UserForm #UserName {
+  background: transparent;
+  border: none;
+  outline: transparent !important;
+}

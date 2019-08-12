@@ -9,8 +9,7 @@ import tornado.websocket
 import tornado.web
 from pyjade.ext.tornado import patch_tornado
 from tornado import template
-from tinydb import TinyDB, Query
-import MasterMinds
+import MasterMinds as MM
 import getopt
 patch_tornado()
 
@@ -23,72 +22,66 @@ def Debug(*input):
     return False
 
 
-DB = TinyDB('Database.json')
-UserTB = DB.table("UserID")
-GameTB = DB.table("GamesPins")
-TurnTB = DB.table("Turns")
-query = Query()
-
 
 class Home(tornado.web.RequestHandler):
     def get(self):
-        if not self.get_cookie("id"):
-            self.set_cookie("id", MasterMinds.CreateUniqID())
-            UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
+            self.set_cookie("id", MM.CreateUniqID(6))
+            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
             Debug("Added New User")
         else:
-            UserTB.update({"LastLogin": time.time()},
-                          query.UserID == self.get_cookie("id"))
+            MM.UserTB.update({"LastLogin": time.time()},
+                          MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Home Page'")
-        self.render("Templates/Home.html")
+        self.render("Templates/Home.html", OwnedGames = list(MM.GameTB.search(MM.query.Creator == self.get_cookie("id"))))
 
 
 class JoinGame(tornado.web.RequestHandler):
     def get(self):
-        if not self.get_cookie("id"):
-            self.set_cookie("id", MasterMinds.CreateUniqID())
-            UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
+            self.set_cookie("id", MM.CreateUniqID())
+            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
             Debug("Added New User")
         else:
-            UserTB.update({"LastLogin": time.time()},
-                          query.UserID == self.get_cookie("id"))
+            MM.UserTB.update({"LastLogin": time.time()},
+                          MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Join Game Page'")
         self.render()
 
 
 class CreateGame(tornado.web.RequestHandler):
     def get(self):
-        if not self.get_cookie("id"):
-            self.set_cookie("id", MasterMinds.CreateUniqID())
-            UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
+            self.set_cookie("id", MM.CreateUniqID())
+            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
             Debug("Added New User")
         else:
-            UserTB.update({"LastLogin": time.time()},
-                          query.UserID == self.get_cookie("id"))
+            MM.UserTB.update({"LastLogin": time.time()},
+                          MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Create Game Page'")
         self.render()
 
 
 class Game(tornado.web.RequestHandler):
     def get(self, GamePin):
-        if not GameTB.search(query.GamePin == GamePin):
+        if not MM.GameTB.search(MM.query.GamePin == GamePin):
             self.redirect("/Join?Pin=" + GamePin)
-        if not self.get_cookie("id"):
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
             Debug("IDless User tryed to join Game <:> User sent back to the /join")
-            # Sends the query to back to the join page due to the query not have a id or username
+            # Sends the MM.query to back to the join page due to the MM.query not have a id or username
             self.redirect("/Join")
         else:
-            UserTB.update({"LastLogin": time.time()},
-                          query.UserID == self.get_cookie("id"))
-            if not UserTB.get(query.UserID == self.get_cookie("id"))["UserName"]:
+            MM.UserTB.update({"LastLogin": time.time()},
+                          MM.query.UserID == self.get_cookie("id"))
+            if not MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"]:
                 Debug("Nameless User tryed to join Game <:> User sent back to the /join")
-                # Send the query to back to the join page due to the query not have a username
+                # Send the MM.query to back to the join page due to the MM.query not have a username
                 self.redirect("/Join")
             else:
-                if Game.get(query.ID == self.get_cookie("id"))["UserName"]:
+                if Game.get(MM.query.ID == self.get_cookie("id"))["UserName"]:
                     pass
                 Debug("User", self.get_cookie("id"),
                       "Sign into Game:", GamePin)
@@ -101,17 +94,20 @@ class MainWebsocket(tornado.websocket.WebSocketHandler):
         pass
 
     def on_message(self, message):
+        Debug("Received Main WebSocket:",message)
         caseswitch = {"cu": self.connect,
                       "uu": self.UpdateUser, "cg": self.CreateGame}
         try:
             message = json.loads(message)
             if message["action"] in caseswitch.keys():
                 caseswitch[message["action"]](*message["Arg"])
+                self.write_message('{"action":"sa"}')
+                return
         except TypeError:
             print("Invalid Arguments")
         except json.decoder.JSONDecodeError:
             print("Invalid JSON string")
-
+        self.write_message('{"action":"fa"}')
     def on_close(self):
         pass
 
@@ -122,8 +118,9 @@ class MainWebsocket(tornado.websocket.WebSocketHandler):
     def UpdateUser(self, UserName):
         pass
 
-    def CreateGame(self, LengthofCode, Grade, NumberofColours, Broadcasttype, Team):
-        pass
+    def CreateGame(self, *Arg):
+        self.Game = MM.GameEngine().CreateGame(*Arg)
+
 
 
 class GameWebsocket(tornado.websocket.WebSocketHandler):
@@ -131,16 +128,21 @@ class GameWebsocket(tornado.websocket.WebSocketHandler):
         pass
 
     def on_message(self, message):
+        Debug("Received Game WebSocket:",message)
         caseswitch = {"cu": self.connect,
                       "qg": self.Quit, "pg": self.Play, "gc": self.Colour}
         try:
             message = json.loads(message)
             if message["action"] in caseswitch.keys():
                 caseswitch[message["action"]](*message["Arg"])
+                self.write_message('{"action":"sa"}')
+                return
+
         except TypeError:
             print("Invalid Arguments")
         except json.decoder.JSONDecodeError:
             print("Invalid JSON string")
+        self.write_message('{"action":"fa"}')
 
     def on_close(self):
         pass
@@ -181,6 +183,24 @@ def Start():
     ], cookie_secret="qwrQzP8pyuykv7PGjReAmANxtLtAHz95")
 
 
-app = Start()
-app.listen(80)
-tornado.ioloop.IOLoop.current().start()
+if __name__ == "__main__":
+
+    argument = None
+    Options = {}
+    for i in sys.argv[1:]:
+        if "-" in i or "--" in i:
+            argument = i
+        else:
+            Options[argument] = i
+    if "-p" in Options.keys():
+        port = Options["-p"]
+    elif "--port" in Options.keys():
+        port = Options["--port"]
+    else:
+        port = 80
+
+    Debug("You are in Debugging Mode")
+    print("Starting Webserver on port", port)
+    app = Start()
+    app.listen(80)
+    tornado.ioloop.IOLoop.current().start()

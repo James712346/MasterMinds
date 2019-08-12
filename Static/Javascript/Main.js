@@ -20,28 +20,6 @@ if (Object.keys(getUrlVars()).includes("Pin")) {
   $("#GamePin").val(getUrlVars()["Pin"])
 }
 
-ws.onopen = function() {
-  ws.send('{"action":"Connected","ID":"' + getCookie("id") + '"}');
-  $(".se-pre-con").fadeOut("slow");
-};
-
-ws.onmessage = function(evt) {
-  if (evt.data != '{"action":"<action>", any other arguments}') {
-    var message = JSON.parse(evt.data)
-    var action = message["action"]
-    if (action == "Username") {
-      $("#UserName").val(message["val"]);
-    } else if (action == "redirect") {
-      window.location = "/Game/" + message["pin"];
-    };
-  } else {
-    console.log(evt.data)
-  }
-};
-$("#UserForm").submit(function(event) {
-  ws.send('{"action":"updateUser","key":"Name","value":"' + $("#UserName").val() + '"}')
-  event.preventDefault();
-});
 //animate body background using color picker function
 function colorMate() {
   var colour = pickColor()
@@ -77,14 +55,13 @@ function Loading() {
   $(".se-pre-con").fadeIn("slow");;
   $("#Card").fadeOut("slow");;
 }
-
-$("#GameForm").submit(function(event) {
-  event.preventDefault()
-  ws.send('{"action":"create","col":' + $('input[name=Number]:checked', '#GameForm').val() + ',"bro":' + $('input[name=Broadcast]:checked', '#GameForm').val() + ',"size":' + $('input[name=Code]:checked', '#GameForm').val() + '}');
-  Loading();
-})
-$("#PinForm").submit(function(event) {
-  event.preventDefault()
-  ws.send('{"action":"updateUser","key":"Name","value":"' + $("#UserName").val() + '"}')
-  window.location = "/Game/" + $("#GamePin").val()
-})
+var rad = $("");
+for(var i = 0; i < rad.length; i++) {
+  rad[i].onclick = function () {
+    if(this == rad[0]) {
+      console.log(this.value)
+    } else {
+      console.log("Gay")
+    }
+  };
+}
