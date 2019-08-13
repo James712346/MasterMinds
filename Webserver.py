@@ -25,51 +25,55 @@ def Debug(*input):
 
 class Home(tornado.web.RequestHandler):
     def get(self):
-        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
-            self.set_cookie("id", MM.CreateUniqID(6))
-            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")) == []:
+            Id = MM.CreateUniqID(6)
+            self.set_cookie("id", Id)
+            MM.UserTB.insert({"UserID": Id, "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
-            Debug("Added New User")
+            Debug("Added New User:", Id)
         else:
             MM.UserTB.update({"LastLogin": time.time()},
                           MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Home Page'")
-        self.render("Templates/Home.html", OwnedGames = list(MM.GameTB.search(MM.query.Creator == self.get_cookie("id"))))
+        Debug(MM.UserTB.get(MM.query.UserID == self.get_cookie("id")))
+        self.render("Templates/Form.html", OwnedGames = list(MM.GameTB.search(MM.query.Creator == self.get_cookie("id"))), Form='Home', Username = MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] if MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] else "")
 
 
 class JoinGame(tornado.web.RequestHandler):
     def get(self):
-        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
-            self.set_cookie("id", MM.CreateUniqID())
-            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")) == []:
+            Id = MM.CreateUniqID(6)
+            self.set_cookie("id", Id)
+            MM.UserTB.insert({"UserID": Id, "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
-            Debug("Added New User")
+            Debug("Added New User:", Id)
         else:
             MM.UserTB.update({"LastLogin": time.time()},
                           MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Join Game Page'")
-        self.render()
+        self.render("Templates/Form.html", Form='Join', Username = MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] if MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] else "")
 
 
 class CreateGame(tornado.web.RequestHandler):
     def get(self):
-        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
-            self.set_cookie("id", MM.CreateUniqID())
-            MM.UserTB.insert({"UserID": self.get_cookie("id"), "LastLogin": time.time(
+        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")) == []:
+            Id = MM.CreateUniqID(6)
+            self.set_cookie("id", Id)
+            MM.UserTB.insert({"UserID": Id, "LastLogin": time.time(
             ), "UserName": None, "Games": None, "Wins": None})
-            Debug("Added New User")
+            Debug("Added New User:", Id)
         else:
             MM.UserTB.update({"LastLogin": time.time()},
                           MM.query.UserID == self.get_cookie("id"))
         Debug("User", self.get_cookie("id"), "Joins the 'Create Game Page'")
-        self.render()
+        self.render("Templates/Form.html", Form='Create', Username = MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] if MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] else "")
 
 
 class Game(tornado.web.RequestHandler):
     def get(self, GamePin):
         if not MM.GameTB.search(MM.query.GamePin == GamePin):
             self.redirect("/Join?Pin=" + GamePin)
-        if (not self.get_cookie("id")) or MM.UserTB.search(MM.query.UserID == self.get_cookie("id")):
+        if (not self.get_cookie("id")) or MM.UserTB.get(MM.query.UserID == self.get_cookie("id")) == []:
             Debug("IDless User tryed to join Game <:> User sent back to the /join")
             # Sends the MM.query to back to the join page due to the MM.query not have a id or username
             self.redirect("/Join")
@@ -116,6 +120,8 @@ class MainWebsocket(tornado.websocket.WebSocketHandler):
         pass
 
     def UpdateUser(self, UserName):
+        Debug("Added a UserName of", UserName, "to", self.UserID)
+        MM.UserTB.update({"UserName": UserName}, MM.query.UserID == self.UserID)
         pass
 
     def CreateGame(self, *Arg):

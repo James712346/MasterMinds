@@ -32,18 +32,18 @@ function Connect(){
 
 $("#CreateGameForm").submit(function(event) {
   event.preventDefault()
-  SendCommand("cu",$("#UserName").val())
+  SendCommand("uu",$("#UserName").val())
   SendCommand("cg", getCookie("id"), )
   Loading();
 })
 $("#PinForm").submit(function(event) {
   event.preventDefault()
-  SendCommand("cu",$("#UserName").val())
+  SendCommand("uu",$("#UserName").val())
   window.location = "/Game/" + $("#GamePin").val()
 })
 
 $("#UserForm").submit(function( event ) {
-  SendCommand("cu",$("#UserName").val())
+  SendCommand("uu",$("#UserName").val())
   event.preventDefault();
 });
 

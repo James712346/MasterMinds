@@ -35,7 +35,7 @@ function colorMate() {
 }
 
 //declare array of colors to be used when page loads
-var colors = ['#206ba4', '#BBD9EE', '  #faebeb', '#c1c1c1', '#e7d3d3', '#F1EFE2', '#52ADDA', '#df6892', '#DBDBDB', '#AACD4B', '#C5AE87'];
+var colors = ['#206ba4', '#BBD9EE', '  #faebeb', '#c1c1c1', '#e7d3d3', '#F1EFE2', '#52ADDA', '#df6892', '#DBDBDB', '#cd9d4b', '#b5c686'];
 var curcolor = 0;
 //picks random color from array, different from current one
 function pickColor() {

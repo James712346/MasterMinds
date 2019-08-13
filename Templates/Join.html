@@ -1,0 +1,18 @@
+<div class="card-body text-align-center" style="text-align: center;">
+  <h1 class="card-title">&lt;<b>Master</b>Mind.io&gt;</h1>
+  <h2 class="card-title"> Join </h2>
+  <form id="PinForm">
+    <div class="form-group">
+      <h5>UserName</h5>
+      {% if Username %}
+        <input type="text" class="form-control" id="UserName" maxlength="12" placeholder="UserName" value="{{ Username }}"  required>
+      {% else %}
+        <input type="text" class="form-control" id="UserName" maxlength="12" placeholder="UserName" required>
+      {% end %}
+      <h5>Game Pin</h5>
+      <input type="text" class="form-control" id="GamePin" placeholder="#GamePin" required>
+      <small id="Help" class="form-text text-muted">Found in the the center or top left of the game's window</small>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>

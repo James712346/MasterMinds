@@ -1,85 +1,30 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link rel="stylesheet" href="/Static/CSS/Main.css">
-  <title>Hello, world!</title>
-</head>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.2/modernizr.js"></script>
-
-<body style="height:100vh">
-  <div class="se-pre-con">
-    <h1 class="text-center">&#60;<b>Master</b>Mind.io&#62;</h1>
-  </div>
-  <form autocomplete="off" id="UserForm" class="fixed-top text-center mt-3">
-    <h3><input id="UserName" class="text-center" placeholder="UserName"></h3>
-  </form>
-  <div class="row h-100">
-    <div class="col-sm-12 my-auto">
-      <div class="card container">
-        <div class="card-body text-align-center" style="text-align: center;">
-          <h1 class="card-title">&lt;<b>Master</b>Mind.io&gt;</h1>
-          <a href="Game/Create" onclick="NewGame()" class="btn btn-primary m-3">
-            <h2>
-              New Game
-            </h2>
-          </a>
-          <a href="Join" class="btn btn-primary m-3">
-            <h2>
-              Join Game
-            </h2>
-          </a>
-          <hr>
-          <h2>Owned Games</h2>
-          {% if OwnedGames %}
-            <ul class="list-group list-group-flush p-4">
-              {% for Game in OwnedGames %}
-              <li class="list-group-item text-right">
-                <div class="float-left">
-                  <h3 class=" text-left">GamePin: {{ Game['GamePin'] }}</h3>
-                  <h3 class="text-left">Grade: {{ Game["Grade"] }} | Status: {% if Game['Playing'] %} Running {%else%} Waiting... {%end%}</h3>
-                </div>
-                <a href="Game/{{ Game['GamePin'] }}" class="btn btn-primary my-auto"><h3>Join</h3></a>
-              </li>
-              {% end %}
-            </ul>
-          {% else %}
-            <p> Wow so empty </p>
-          {% end %}
+<div class="card-body text-align-center" style="text-align: center;">
+  <h1 class="card-title">&lt;<b>Master</b>Mind.io&gt;</h1>
+  <a href="Game/Create" onclick="NewGame()" class="btn btn-primary m-3">
+    <h2>
+      New Game
+    </h2>
+  </a>
+  <a href="Join" class="btn btn-primary m-3">
+    <h2>
+      Join Game
+    </h2>
+  </a>
+  <hr>
+  <h2>Owned Games</h2>
+  {% if OwnedGames %}
+    <ul class="list-group list-group-flush p-4">
+      {% for Game in OwnedGames %}
+      <li class="list-group-item text-right">
+        <div class="float-left">
+          <h3 class=" text-left">GamePin: {{ Game['GamePin'] }}</h3>
+          <h3 class="text-left">Grade: {{ Game["Grade"] }} | Status: {% if Game['Playing'] %} Running {%else%} Waiting... {%end%}</h3>
         </div>
-      </div>
-    </div>
-  </div>
-  <div class=”row align-items-center”>
-    <div class="col-6">
-
-    </div>
-  </div>
-  <div class="row h-100">
-    <div class="col-sm-12 my-auto">
-
-    </div>
-    <footer class="fixed-bottom text-center">
-      <p class="mb-0">&copy;2019 James Prince SPS-IPT</p>
-      <a href="#">
-        <p>Help<p>
-      </a>
-    </footer>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="/Static/Javascript/jquery.color.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="/Static/Javascript/Main.js"></script>
-    <script src="/Static/Javascript/Main.Websocket.js"></script>
-</body>
-
-</html>
+        <a href="Game/{{ Game['GamePin'] }}" class="btn btn-primary my-auto"><h3>Join</h3></a>
+      </li>
+      {% end %}
+    </ul>
+  {% else %}
+    <p> Wow so empty </p>
+  {% end %}
+</div>

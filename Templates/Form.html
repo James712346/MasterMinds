@@ -1,0 +1,54 @@
+{% include "Header.html"%}
+
+<body style="height:100vh">
+  <div class="se-pre-con">
+    <h1 class="text-center">&#60;<b>Master</b>Mind.io&#62;</h1>
+  </div>
+  <form autocomplete="off" id="UserForm" class="fixed-top container text-center mt-3 px-0" style="width: 390px;text-fonts: 10px;">
+    <h3>
+      {% if Username %}
+        <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" value="{{ Username }}"  required>
+      {% else %}
+        <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" required>
+      {% end %}
+    </h3>
+  </form>
+  <div class="row h-100">
+    <div class="col-sm-12 my-auto px-0">
+      <div class="card container">
+        {% if Form == "Home" %}
+          {% include Home.html %}
+        {% elif Form == "Create"%}
+          {% include Create.html %}
+        {% elif Form == "Join"%}
+          {% include Join.html %}
+        {% end %}
+      </div>
+    </div>
+  </div>
+  <div class="row align-items-center">
+    <div class="col-6">
+
+    </div>
+  </div>
+  <div class="row h-100">
+    <div class="col-sm-12 my-auto">
+
+    </div>
+    <footer class="fixed-bottom text-center">
+      <p class="mb-0">&copy;2019 James Prince SPS-IPT</p>
+      <a href="#">
+        <p>Help<p>
+      </a>
+    </footer>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/Static/Javascript/jquery.color.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/Static/Javascript/Main.js"></script>
+    <script src="/Static/Javascript/Main.Websocket.js"></script>
+</body>
+
+</html>
