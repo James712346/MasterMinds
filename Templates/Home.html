@@ -13,14 +13,18 @@
   <hr>
   <h2>Owned Games</h2>
   {% if OwnedGames %}
-    <ul class="list-group list-group-flush p-4">
+    <ul class="list-group list-group-flush p-4" id="Games">
       {% for Game in OwnedGames %}
-      <li class="list-group-item text-right">
+      <li class="list-group-item text-right" id="{{ Game['GamePin'] }}">
         <div class="float-left">
           <h3 class=" text-left">GamePin: {{ Game['GamePin'] }}</h3>
-          <h3 class="text-left">Grade: {{ Game["Grade"] }} | Status: {% if Game['Playing'] %} Running {%else%} Waiting... {%end%}</h3>
+          <h3 class="text-left">Grade: {{ Game["Grade"] }} | {% if Game['Team'] == "true" %} Teamed {%else%} Solo {%end%} | Status: {% if Game['Playing'] %} Running {%else%} Waiting... {%end%}</h3>
         </div>
-        <a href="Game/{{ Game['GamePin'] }}" class="btn btn-primary my-auto"><h3>Join</h3></a>
+        <div class="btn-group" role="group">
+          <a href="/Game/{{ Game['GamePin'] }}" class="btn btn-primary my-auto"><h3>Join</h3></a>
+          <button name="{{ Game['GamePin'] }}" class="btn btn-danger my-auto Remover"><h3>Remove</h3></button>
+        </div>
+
       </li>
       {% end %}
     </ul>

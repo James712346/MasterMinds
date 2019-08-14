@@ -20,6 +20,7 @@ function Connect(){
       };
     } else {
       console.error("Action Failed")
+      $(".se-pre-con").fadeOut("slow");
     }
   };
   ws.onclose = function(){
@@ -30,12 +31,6 @@ function Connect(){
   };
 };
 
-$("#CreateGameForm").submit(function(event) {
-  event.preventDefault()
-  SendCommand("uu",$("#UserName").val())
-  SendCommand("cg", getCookie("id"), )
-  Loading();
-})
 $("#PinForm").submit(function(event) {
   event.preventDefault()
   SendCommand("uu",$("#UserName").val())
@@ -54,5 +49,29 @@ function SendCommand(action, ...Args){
   }
   ws.send('{"action":"'+action+'", "Arg":['+string.slice(0, -1)+']}')
 }
+$("#CreateForm").submit(function(event){
+  event.preventDefault();
+  if ($("[name='Grade']:checked").val() == "C"){
+    var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
+  } else{ var Values = $("input[name='Grade']:checked").val()}
+  SendCommand("cg", Values, false)
+  Loading();
+})
+$("button[name='Teams']").click(function(){
+  if ($("[name='Grade']:checked").val() == "C"){
+    var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
+  } else{ var Values = $("input[name='Grade']:checked").val()}
+  SendCommand("cg", Values, true)
+  Loading();
+})
+$(".Remover").click(function(){
+  SendCommand("rg", $(this)[0].name)
+  $("#"+$(this)[0].name).remove();
+  if (! $(".Remover").length){
+    console.log("oof")
+    $("#Games").append("<p> Wow so empty </p>")
+  }
+})
+
 
 Connect()

@@ -65,3 +65,9 @@ for(var i = 0; i < rad.length; i++) {
     }
   };
 }
+
+$("#customsetting").hide();
+$("[name='Grade']").click( function(){
+  if ($(this)[0].id == "custom"){
+  $("#customsetting").show();}else{$("#customsetting").hide();}
+})

@@ -7,6 +7,7 @@ import string
 
 Colours = ["red", "orange", "yellow", "green",
            "blue", "purple", "pink", "brown"]
+
 Objects = []
 
 DB = TinyDB('Database.json')
@@ -14,7 +15,6 @@ UserTB = DB.table("UserID")
 GameTB = DB.table("GamesPins")
 TurnTB = DB.table("Turns")
 query = Query()
-
 
 def Debug(*input):
     if "-d" in sys.argv[1:] or "--degug" in sys.argv[1:]:
@@ -37,8 +37,12 @@ class GameEngine():
             try:
                 Graded = {"PrePrep-1":(2,2),"2-3":(4,4),"4-6":(6,4),"7-9":(8,4),"10-12":(12,6)}[Grade]
             except:
-                Debug("Wrong Input")
-                Graded = (4,4)
+                try:
+                    Graded = [int(G) for G in Grade.split(",")]
+                    Grade = "Custom"
+                except:
+                    Debug("Wrong Input")
+                    return False
         else:
             Graded = Grade
             Grade = "Custom"
@@ -48,7 +52,15 @@ class GameEngine():
         self.liveInput = [Colours[i] for i in range(0, Graded[1])]
         GameTB.insert({"GamePin": self.GamePin,"Creator": UserID,"Code": [random.choice(Colours) for i in range(
             0, Graded[1])], "AvailableColours": Graded[0], "Grade": Grade, "Creation": time.time(), "Playing": False, "Team": Team})
+        Debug("Created Game with a GamePin of", self.GamePin)
         return self
+
+    def delete(self, UserID):
+        if UserID == GameTB.get(self.req)["Creator"]:
+            GameTB.remove(self.req)
+            Objects.remove(self)
+            return True
+        return False
 
     def Play(self, UserID, ICode, Code=None):
         if not GameTB.get(self.req):
@@ -76,11 +88,13 @@ class GameEngine():
             return TurnTB.search(self.req)
 
 
-def GetObject(self, GamePin):
+def GetObject(GamePin):
+    Debug("Finding", GamePin)
+    Debug("Found", [Object for Object in Objects if Object.GamePin == GamePin])
     return [Object for Object in Objects if Object.GamePin == GamePin][0]
 
 
-def GetWebSocket(self, GamePin, UserID):
+def GetWebSocket(GamePin, UserID):
     return [User for User in GetObject(GamePin) if User.UserID == UserID][0]
 
 
@@ -92,6 +106,8 @@ def CreateUniqID(length):
                       for n in range(1, length)])
     return id
 
+
+Debug([GameEngine(Game["GamePin"]) for Game in GameTB])
 
 if __name__ == "__main__":
     Debug("You are in Debugging Mode")
