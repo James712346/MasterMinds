@@ -7,11 +7,9 @@ import sys
 from tornado.util import _websocket_mask
 import tornado.websocket
 import tornado.web
-from pyjade.ext.tornado import patch_tornado
 from tornado import template
 import MasterMinds as MM
 import getopt
-patch_tornado()
 
 
 def Debug(*input):
@@ -29,7 +27,7 @@ class Home(tornado.web.RequestHandler):
             Id = MM.CreateUniqID(6)
             self.set_cookie("id", Id)
             MM.UserTB.insert({"UserID": Id, "LastLogin": time.time(
-            ), "UserName": None, "Games": None, "Wins": None})
+            ), "UserName": None, "Game": None, "Wins": None})
             Debug("Added New User:", Id)
         else:
             Id = self.get_cookie("id")
@@ -81,18 +79,21 @@ class Game(tornado.web.RequestHandler):
             # Sends the MM.query to back to the join page due to the MM.query not have a id or username
             self.redirect("/Join")
         else:
-            MM.UserTB.update({"LastLogin": time.time()},
-                          MM.query.UserID == self.get_cookie("id"))
             if not MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"]:
                 Debug("Nameless User tryed to join Game <:> User sent back to the /join")
                 # Send the MM.query to back to the join page due to the MM.query not have a username
                 self.redirect("/Join")
-            else:
-                if Game.get(MM.query.ID == self.get_cookie("id"))["UserName"]:
-                    pass
+            elif MM.GetObject(GamePin).GetUsers():
+                MM.GetObject(GamePin).AddUser(self.get_cookie("id"))
                 Debug("User", self.get_cookie("id"),
                       "Sign into Game:", GamePin)
-                self.render("/Templates/Game.html")
+                if Game.get(MM.query.ID == self.get_cookie("id"))["Playing"]:
+                    self.render("/Templates/Game.html")
+                    return
+                self.render("/Templates/Waiting.html", Row1 = UsersConnected[:5] if len(UsersConnected) >= 6 else UsersConnected , Row2 = UsersConnected[5:10] if len(UsersConnected) >= 11 else UsersConnected[5:] if len(UsersConnected) >= 6 else [], Row3 = UsersConnected[10:15] if len(UsersConnected) >= 11 else UsersConnected[5:] if len(UsersConnected) >= 6 else [])
+            else:
+                self.redirect("/Join")
+
 
 
 class MainWebsocket(tornado.websocket.WebSocketHandler):

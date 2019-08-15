@@ -1,0 +1,9 @@
+README.md
+setup.py
+MasterMinds.egg-info/PKG-INFO
+MasterMinds.egg-info/SOURCES.txt
+MasterMinds.egg-info/dependency_links.txt
+MasterMinds.egg-info/top_level.txt
+src/MasterMinds.py
+src/Webserver.py
+src/__init__.py

@@ -10,20 +10,21 @@ function Connect(){
   };
 
   Gamews.onmessage = function (evt) {
-    switch (evt.data["action"]){
+    var message = JSON.parse(evt.data)
+    switch (message["action"]){
       case "sa":
         console.log("Action Successfully");
         break;
       case "fa":
         console.log("Action Failed")
       case "gc":
-        $(".C")[evt.data["Arg"][0]].children[1].style.backgroundColor = evt.data["Arg"][1];
+        $(".C")[message["Arg"][0]].children[1].style.backgroundColor = message["Arg"][1];
         break;
       case "qg":
         console.log("Quiting")
         break;
       case "pr":
-        AddCode(*message);
+        AddCode(*message["Arg"]);
         break;
       case "pt":
         ShowControls();

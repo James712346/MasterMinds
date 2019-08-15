@@ -10,17 +10,18 @@ function Connect(){
 
   ws.onmessage = function(evt) {
     var message = JSON.parse(evt.data)
-    var action = message["action"]
-    if ("Failed" != action) {
-      var message = JSON.parse(evt.data)
-      if (action == "uu") { //Users Username
-        $("#UserName").val(message["val"]);
-      } else if (action == "rd") { //Redirect
-        window.location = "/Game/" + message["pin"];
-      };
-    } else {
-      console.error("Action Failed")
-      $(".se-pre-con").fadeOut("slow");
+    switch (message["action"]){
+      case "sa":
+        console.log("Websocket Action Successfully");
+        break;
+      case "fa":
+        console.warn("WebSocket Action Failed")
+        break;
+      case "rd":
+        window.location = message["Arg"]
+        break;
+      default:
+        console.warn("Unknown Action")
     }
   };
   ws.onclose = function(){

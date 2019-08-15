@@ -86,6 +86,15 @@ class GameEngine():
             return TurnTB.search(self.req & query.UserID == UserID)
         else:
             return TurnTB.search(self.req)
+    def AddUser(self, UserID):
+        if len(self.GetUsers()) < 15:
+            UserTB.update({"Game": self.GamePin, "LastLogin": time.time()},
+                      query.UserID == UserID)
+            return True
+        return False
+
+    def GetUsers(self):
+        return UserTB.get(query.Game == self.GamePin)
 
 
 def GetObject(GamePin):
