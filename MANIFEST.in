@@ -1,0 +1,12 @@
+include *.lock
+include LICENSE
+include Pipfile
+recursive-include build *.py
+recursive-include dist *.whl
+recursive-include src *.css
+recursive-include src *.gif
+recursive-include src *.html
+recursive-include src *.ico
+recursive-include src *.js
+recursive-include src *.json
+recursive-include src *.pyc
