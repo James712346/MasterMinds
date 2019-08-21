@@ -7,36 +7,28 @@
 
     <form autocomplete="off" id="UserForm" class="container mt-3 px-0 mx-3 float-right" style="width: 390px;text-fonts: 10px;">
       <h3>
-          <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" required>
+          {% if Username %}
+            <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" value="{{ Username }}"  required>
+          {% else %}
+            <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" required>
+          {% end %}
       </h3>
     </form>
     <h3 class="text-center my-4 mx-auto" style="width:300px;">MasterMinds</h3>
   </div>
-  <div class="row h-100">
-    {% if Row1 %}
-      <lu class="list-group list-group-flush col p-5">
-        {% for User in Row1 %}
-          <li class="list-group-item m-5" style="background:transparent;"><h3 class="text-center">{{User}}</h3></li>
+  <div class="h-100">
+    {% if UsersConnected %}
+      <h2 class="pt-5 my-5 text-center"> Users Connected </h2>
+      <lu class="list-group list-group-flush">
+        {% for User in UsersConnected %}
+          <li class="list-group-item" style="background:transparent;"><h3 class="text-center">{{User["UserName"]}}</h3></li>
         {% end %}
       </lu>
     {% end %}
-    {% if Row2 %}
-      <lu class="list-group list-group-flush col p-5">
-        {% for User in Row2 %}
-          <li class="list-group-item m-5" style="background:transparent;"><h3 class="text-center">{{User}}</h3></li>
-        {% end %}
-      </lu>
-    {% end %}
-    {% if Row3 %}
-      <lu class="list-group list-group-flush col p-5">
-        {% for User in Row3 %}
-          <li class="list-group-item m-5" style="background:transparent;"><h3 class="text-center">{{User}}</h3></li>
-        {% end %}
-      </lu>
-    {% end %}
-  </div>
     <footer class="fixed-bottom text-center bg-white">
+      <form method="post">
       <button class="btn btn-primary float-right my-3 mx-5"><h2> Start</h2></button>
+    </form>
       <p class="mb-0 mt-3 text-center mx-auto" style="width:300px">&copy;2019 James Prince SPS-IPT
         <br>
       <a class="mb-0 mt-3 text-center mx-auto" style="width:200px" href="#">

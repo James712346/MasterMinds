@@ -1,9 +1,0 @@
-README.md
-setup.py
-MasterMinds_James712346.egg-info/PKG-INFO
-MasterMinds_James712346.egg-info/SOURCES.txt
-MasterMinds_James712346.egg-info/dependency_links.txt
-MasterMinds_James712346.egg-info/top_level.txt
-src/MasterMinds.py
-src/Webserver.py
-src/__init__.py

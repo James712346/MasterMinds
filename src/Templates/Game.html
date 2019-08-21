@@ -1,0 +1,79 @@
+{% include "Header.html"%}
+  <body class="Game">
+    <script>var Team = {{Lowbandwidth}};</script>
+    <div id="Chat"></div>
+    <h1 class="text-center m-3" id="Title"><<b>Master</b>Mind.io></h1>
+    <div class="se-pre-con"></div>
+    <form class="m-3" id="UserForm" autocomplete="off">
+      <h3>
+        {% if Username %}
+          <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" value="{{ Username }}"  required>
+        {% else %}
+          <input type="text" class="form-control text-center" id="UserName" maxlength="12" style="font-size: 2rem; color:black;" placeholder="UserName" required>
+        {% end %}
+      </h3>
+    </form>
+    {% if Code %}
+    <form class="text-center" id="cheats" autocomplete="off">
+      <h3>Answer</h3>
+      <div class="row container" style="height:200px; margin:0px">
+        {% for i in Code %}
+          <div class="col C">
+            <div style="background-color:{{i}};height: 100%;"></div>
+          </div>
+        {% end %}
+      </div>
+    </form>
+    {%end%}
+
+    <form class="text-center" id="GameForm" autocomplete="off">
+      <h3 class="py-2">Code</h3>
+      <div class="row container" style="height:200px">
+        {% for i in Colours %}
+          <div class="col C">
+            <button class="btn btn-default" name="UP" type="button"><i class="fas fa-arrow-up"></i></button>
+            <div class="Box" name="Box" style="background-color:{{i}}"></div>
+            <button class="btn btn-default" name="DOWN" type="button"><i class="fas fa-arrow-down"></i></button>
+          </div>
+        {% end %}
+      </div>
+      <button class="btn btn-primary font-weight-bold">SEND</button>
+      <h4>Waiting for User...</h4>
+    </form>
+    <div id="Results">
+      <h3> Pass Attempts</h3>
+      <div class="container text-center" style="overflow-y: scroll;">
+        {% for turn in Turns %}
+          <div class="row ">
+            <div class="Number text-right">
+              {{ turn[2] }}
+            </div>
+            {% for colour in turn[1] %}
+              <div class="col RC" style="background-color: {{ colour }} "></div>
+            {% end %}
+            <div class="Number text-left">
+              {{ turn[3] }}
+            </div>
+          </div>
+        {% end %}
+    </div>
+    </div>
+    <footer>
+      <div height="610"></div>
+      <div class="fixed-bottom text-center">
+        <p class="mb-0">©2019 James Prince SPS-IPT</p><a href="#">
+          <p>Help</p></a>
+        <p><a href="#"></a></p>
+      </div>
+    </footer>
+    <!-- Optional JavaScript-->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/Static/Javascript/jquery.color.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="/Static/Javascript/Main.js"></script>
+    <script src="/Static/Javascript/Game.WebSocket.js"></script>
+    <script src="/Static/Javascript/Main.WebSocket.js"></script>
+  </body>
+</html>

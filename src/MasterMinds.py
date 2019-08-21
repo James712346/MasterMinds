@@ -29,7 +29,8 @@ class GameEngine():
         self.GamePin = GamePin
         self.WS = []
         self.req = query.GamePin == self.GamePin
-        self.liveInput = GameTB.get(self.req)["AvailableColours"] if GamePin else None
+        self.liveInput = Colours[:GameTB.get(self.req)["AvailableColours"]] if GamePin else None
+        self.PlayerPlaying = None
         Objects.append(self)
 
     def CreateGame(self, UserID, Grade=(4,4), Team=False):
@@ -46,7 +47,6 @@ class GameEngine():
         else:
             Graded = Grade
             Grade = "Custom"
-
         self.GamePin = CreateUniqID(5)
         self.req = query.GamePin == self.GamePin
         self.liveInput = [Colours[i] for i in range(0, Graded[1])]
@@ -67,44 +67,63 @@ class GameEngine():
             return False
         Code = Code if Code else GameTB.get(self.req)["Code"]
         if Code == ICode:
-            return (UserID, ICode, len(ICode), 0)
+            TurnTB.insert( {"Code":ICode,"RightPlace":len(ICode),"RightColour":0, "UserID":UserID,"GamePin":self.GamePin})
+            return (UserID, len(Code), ICode, 0)
         for i in range(0, len(Code)):
-            done = False
             if Code[i] == ICode[i]:
                 Code[i] = None
-                done = True
+                continue
             elif Code[i].lower() == ICode[i]:
                 Code[i] = None
-            if ICode[i] in Code and not done:
+            if ICode[i] in Code:
                 Code[Code.index(ICode[i])] = ICode[i].upper()
         Debug(ICode, Code)
+        TurnTB.insert( {"Code":ICode,"RightPlace":Code.count(None),"RightColour":len([i for i in list(filter(None, Code)) if i.isupper()]), "UserID":UserID,"GamePin":self.GamePin})
+        self.NextTurn()
         # add the Turn to the TurnTB
         return (UserID, Code.count(None), ICode, len([i for i in list(filter(None, Code)) if i.isupper()]))
 
     def Turns(self, UserID):
-        if GameTB.get(req)["Gamemode"] == 'Solo':
+        if GameTB.get(self.req)["Team"] == 'Solo':
             return TurnTB.search(self.req & query.UserID == UserID)
         else:
             return TurnTB.search(self.req)
-    def AddUser(self, UserID):
-        if len(self.GetUsers()) < 15:
-            UserTB.update({"Game": self.GamePin, "LastLogin": time.time()},
+
+    def AddUser(self, UserID, ws):
+        if len(self.GetUsers()) < 5 or GameTB.get(self.req)["Team"] == 'Solo':
+            if self.PlayerPlaying:
+                self.PlayerPlaying = UserID
+            UserTB.update({"LastLogin": time.time()},
                       query.UserID == UserID)
+            self.WS.append(ws)
             return True
         return False
 
-    def GetUsers(self):
-        return UserTB.get(query.Game == self.GamePin)
+    def RemoveUser(self, UserID):
+        if UserID == self.PlayerPlaying:
+            self.NextTurn()
+        UserTB.update(query.UserID == UserID)
+        self.ws.remove(self.GetWebSockets(UserID, True))
+        return True
 
+    def NextTurn(self):
+        if len(self.WS)-1:
+            self.PlayerPlaying = None
+        else:
+            self.PlayerPlaying = self.GetUsers(self.PlayerPlaying).index(self.PlayerPlaying)
+
+    def GetUsers(self, UserID=None):
+        return [ws.UserID for ws in self.WS if ws.UserID != UserID]
+
+    def GetWebSockets(self, UserID=None, iv = False):
+        return [User for User in self.WS if User.UserID == UserID] if iv else [User for User in self.WS if User.UserID != UserID]
 
 def GetObject(GamePin):
     Debug("Finding", GamePin)
-    Debug("Found", [Object for Object in Objects if Object.GamePin == GamePin])
     return [Object for Object in Objects if Object.GamePin == GamePin][0]
 
 
-def GetWebSocket(GamePin, UserID):
-    return [User for User in GetObject(GamePin) if User.UserID == UserID][0]
+
 
 
 def CreateUniqID(length):

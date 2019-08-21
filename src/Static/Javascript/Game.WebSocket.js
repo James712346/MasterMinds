@@ -1,7 +1,8 @@
 var Pin = url.href.split("/").slice(-1)[0]
+var GConnectInter;
 
 function Connect(){
-  GameGamews = new WebSocket("ws://"+window.location.host+"/Game/ws");
+  Gamews = new WebSocket("ws://"+window.location.host+"/G/ws");
   Gamews.onopen = function() {
      GSendCommand("cu", getCookie("id"), Pin);
      $(".se-pre-con").fadeOut("slow");
@@ -24,10 +25,10 @@ function Connect(){
         console.log("Quiting")
         break;
       case "pr":
-        AddCode(*message["Arg"]);
+        AddCode(...message["Arg"]);
         break;
-      case "pt":
-        ShowControls();
+      case "nt":
+        NextTurn(...message["Arg"]);
         break;
       default:
         console.log("Unknown Action")
@@ -49,12 +50,11 @@ $(".C button").click(function(){
       console.log(Index)
       if ($(this)[0].name == "UP"){
        $(this)[0].parentElement.children[1].style.backgroundColor = Colours[(Index != Colours.length-1) ? Index+1 : 0];
-       Gamews.send('{"action":"ColoursChange","index":'+ $(".C").index($(this)[0].parentElement) +',"colour":"'+Colours[(Index != Colours.length-1) ? Index+1 : 0]+'"}');
       }
       else{
        $(this)[0].parentElement.children[1].style.backgroundColor = Colours[(Index != 0) ? Index-1 : Colours.length-1];
-       Gamews.send('{"action":"ColoursChange","index":'+ $(".C").index($(this)[0].parentElement) +',"colour":"'+Colours[(Index != 0) ? Index-1 : Colours.length-1]+'"}');
       }
+      GSendCommand("cc", $(".C").index($(this)[0].parentElement), $(this)[0].parentElement.children[1].style.backgroundColor)
 })
 
 function AddCode(UserID, RC, code, RP){
@@ -82,5 +82,20 @@ function GSendCommand(action, ...Args){
     string = string + '"' + Args[i] + '",';
   }
   Gamews.send('{"action":"'+action+'", "Arg":['+string.slice(0, -1)+']}')
+}
+function HideControls(){
+  $("#GameForm button").hide();
+  $("#GameForm h4").show();
+  $("#GameForm .C .Box").css("height","60%");
+  $("#GameForm .C .Box").css("padding","20% 0");
+}
+function NextTurn(UserID){
+  if (UserID == getCookie("id")){$("#GameForm button").show();
+  $("#GameForm h4").hide();
+  $("#GameForm .C .Box").css("height","33%");
+  $("#GameForm .C .Box").css("padding","0");}else{
+    console.log(UserID)
+  }
+
 }
 Connect()

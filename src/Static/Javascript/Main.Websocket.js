@@ -18,7 +18,7 @@ function Connect(){
         console.warn("WebSocket Action Failed")
         break;
       case "rd":
-        window.location = message["Arg"]
+        document.location.href = message["Arg"][0]
         break;
       default:
         console.warn("Unknown Action")
@@ -55,6 +55,7 @@ $("#CreateForm").submit(function(event){
   if ($("[name='Grade']:checked").val() == "C"){
     var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
   } else{ var Values = $("input[name='Grade']:checked").val()}
+  SendCommand("uu",$("#UserName").val())
   SendCommand("cg", Values, false)
   Loading();
 })
@@ -62,6 +63,7 @@ $("button[name='Teams']").click(function(){
   if ($("[name='Grade']:checked").val() == "C"){
     var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
   } else{ var Values = $("input[name='Grade']:checked").val()}
+  SendCommand("uu",$("#UserName").val())
   SendCommand("cg", Values, true)
   Loading();
 })

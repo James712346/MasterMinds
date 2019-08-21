@@ -9,7 +9,6 @@ MasterMinds.egg-info/SOURCES.txt
 MasterMinds.egg-info/dependency_links.txt
 MasterMinds.egg-info/top_level.txt
 dist/MasterMinds-0.0.1-py3-none-any.whl
-dist/MasterMinds_James712346-0.0.1-py3-none-any.whl
 src/Database.json
 src/MasterMinds.py
 src/Webserver.py
