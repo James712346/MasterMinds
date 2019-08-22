@@ -81,20 +81,22 @@ class Game(tornado.web.RequestHandler):
                     bw = "true" if GameValues["Team"] or "-lb" in sys.argv[1:
                                                                            ] or "--low_bandwidth" in sys.argv[1:] else "false"
                     self.render("Templates/Game.html", Lowbandwidth=bw, Username=MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))[
-                                "UserName"], Colours=MM.GetObject(GamePin).liveInput, Turns=MM.GetObject(GamePin).Turns(self.get_cookie("id")), Code=Code)
+                                "UserName"], Colours=MM.GetObject(GamePin).liveInput, Turns=MM.GetObject(GamePin).Turns(self.get_cookie("id")), Code=Code, AvailableColours=MM.GameTB.search(MM.query.GamePin == GamePin)[0]["AvailableColours"])
                     return
                 self.render("Templates/Waiting.html", UsersConnected=MM.GetObject(GamePin).GetUsers()[1:], Username=MM.UserTB.get(
                     MM.query.UserID == self.get_cookie("id"))["UserName"] if MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))["UserName"] else "")
 
     def post(self, GamePin):
         MM.GameTB.update({"Playing": True}, MM.query.GamePin == GamePin)
-        [SendCommand(user, "rd", "/g/" + GamePin) for user in MM.GetObject(GamePin).GetWebSockets()]
-        Code = MM.GameTB.search(MM.query.GamePin == GamePin)[0]["Code"] if Debug() else []
+        [SendCommand(user, "rd", "/g/" + GamePin)
+         for user in MM.GetObject(GamePin).GetWebSockets()]
+        Code = MM.GameTB.search(MM.query.GamePin == GamePin)[
+            0]["Code"] if Debug() else []
         Debug("Game has Started")
         bw = "true" if MM.GameTB.get(MM.query.GamePin == GamePin)[
             "Team"] or "-lb" in sys.argv[1:] or "--low_bandwidth" in sys.argv[1:] else "false"
         self.render("Templates/Game.html", Lowbandwidth=bw, Username=MM.UserTB.get(MM.query.UserID == self.get_cookie("id"))
-                    ["UserName"], Colours=MM.GetObject(GamePin).liveInput, Turns=MM.GetObject(GamePin).Turns(self.get_cookie("id")), Code=Code)
+                    ["UserName"], Colours=MM.GetObject(GamePin).liveInput, Turns=MM.GetObject(GamePin).Turns(self.get_cookie("id")), Code=Code, AvailableColours=MM.GameTB.search(MM.query.GamePin == GamePin)[0]["AvailableColours"])
 
 
 class MainWebsocket(tornado.websocket.WebSocketHandler):
@@ -137,7 +139,7 @@ class MainWebsocket(tornado.websocket.WebSocketHandler):
     def CreateGame(self, *Arg):
         Game = MM.GameEngine().CreateGame(self.UserID, *Arg)
         if Game:
-            SendCommand(self,"rd","/G/"+Game.GamePin)
+            SendCommand(self, "rd", "/G/" + Game.GamePin)
         return Game
 
     def RemoveGame(self, GamePin):
@@ -151,7 +153,7 @@ class GameWebsocket(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         Debug("Received Game WebSocket:", message)
         caseswitch = {"cu": self.connect,
-                      "qg": self.Quit, "pg": self.Play, "gc": self.Colour}
+                      "qg": self.Quit, "pg": self.Play, "cc": self.Colour}
         try:
             message = json.loads(message)
             if message["action"] in caseswitch.keys():
@@ -165,18 +167,24 @@ class GameWebsocket(tornado.websocket.WebSocketHandler):
         SendCommand(self, "fa")
 
     def on_close(self):
-        if MM.GetObject(self.GamePin).PlayerPlaying == self.UserID and MM.GetObject(self.GamePin).RemoveUser(self.UserID):
-            [SendCommand(ws, "nt", MM.GetObject(self.GamePin).PlayerPlaying)
-             for ws in MM.GetObject(self.GamePin).GetWebSockets()]
-        pass
+        Debug("User", self.get_cookie("id"), "disconnected")
+        try:
+            if MM.GetObject(self.GamePin).PlayerPlaying == self.UserID and MM.GetObject(self.GamePin).RemoveUser(self.UserID):
+                MM.GetObject(self.GamePin).NextTurn()
+                [SendCommand(ws, "nt", MM.GetObject(self.GamePin).PlayerPlaying)
+                 for ws in MM.GetObject(self.GamePin).GetWebSockets()]
+        except:
+            pass
 
     def connect(self, UserID, GamePin):
         if self.get_cookie("id") == UserID:
             self.UserID = self.get_cookie("id")
             self.GamePin = GamePin
             MM.GetObject(self.GamePin).AddUser(self.get_cookie("id"), self)
-            if MM.GetObject(self.GamePin).PlayerPlaying == UserID:
-                [SendCommand(ws, "nt", self.UserID)
+            if MM.GetObject(self.GamePin).PlayerPlaying == None:
+                MM.GetObject(
+                    self.GamePin).PlayerPlaying = self.get_cookie("id")
+                [SendCommand(ws, "nt", self.get_cookie("id"))
                  for ws in MM.GetObject(self.GamePin).GetWebSockets()]
         else:
             self.close()
@@ -185,21 +193,29 @@ class GameWebsocket(tornado.websocket.WebSocketHandler):
         pass
 
     def Play(self, Code):
-        MM.GetObject(self.GamePin).Play(self.UserID, Code)
+        results = MM.GetObject(self.GamePin).Play(self.UserID, Code.split(","))
+        [SendCommand(ws,"pr",*results) for ws in MM.GetObject(self.GamePin).GetWebSockets()]
+        [SendCommand(ws, "nt", MM.GetObject(self.GamePin).PlayerPlaying) for ws in MM.GetObject(self.GamePin).GetWebSockets()]
 
     def Quit(self):
         pass
 
     def Colour(self, Index, Colour):
+        Index = int(Index)
         MM.GetObject(self.GamePin).liveInput[Index] = Colour
-        [SendCommand(ws, Index, Colour) for ws in MM.GetObject(
+        [SendCommand(ws,"cc", Index, Colour) for ws in MM.GetObject(
             self.GamePin).GetWebSockets(self.UserID)]
 
 
 def SendCommand(self, action, *Arg):
-    Debug("Sending", '{"action":"' + action +
-          '","Arg":' + str(list(Arg)) + '}')
-    self.write_message(('{"action":"' + action + '","Arg":' + str(list(Arg)) + '}').replace("'",'"'))
+    try:
+        Debug("Sending", '{"action":"' + action +
+              '","Arg":' + str(list(Arg)).replace("'", '"') + '}')
+
+        self.write_message(
+            ('{"action":"' + action + '","Arg":' + str(list(Arg)).replace("'", '"') + '}'))
+    except :
+        print("WebSocket Failed to Send to", self.UserID)
 
 
 def Start():

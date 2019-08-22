@@ -1,5 +1,5 @@
 var Pin = url.href.split("/").slice(-1)[0]
-var GConnectInter;
+var GConnectInter
 
 function Connect(){
   Gamews = new WebSocket("ws://"+window.location.host+"/G/ws");
@@ -18,7 +18,8 @@ function Connect(){
         break;
       case "fa":
         console.log("Action Failed")
-      case "gc":
+        break
+      case "cc":
         $(".C")[message["Arg"][0]].children[1].style.backgroundColor = message["Arg"][1];
         break;
       case "qg":
@@ -58,12 +59,12 @@ $(".C button").click(function(){
 })
 
 function AddCode(UserID, RC, code, RP){
-  var HtmlScript = '<div class="row"> <div class="Number text-right">'+RC+'</div>'
+  var HtmlScript = '<div class="row"> <div class="Number text-right WhiteResults">'+RC+'</div>'
   for (i = 0; i < code.length; i++){
     HtmlScript+= '<div class="col RC" style="background-color: '+code[i]+'"></div>'
   }
-  HtmlScript+='<div class="Number text-left">'+RP+'</div></div> '
-  $("#Results").prepend(HtmlScript)
+  HtmlScript+='<div class="Number text-left BlackResults">'+RP+'</div></div> '
+  $("#codes").prepend(HtmlScript)
 }
 
 $("#GameForm").submit(function(event){
@@ -73,7 +74,7 @@ $("#GameForm").submit(function(event){
     for (i = 0; i < $(".C").length; i++) {
       code.push($(".C")[i].children[1].style.backgroundColor);
     };
-    GSendCommand("pg", Pin, code);
+    GSendCommand("pg", code);
 })
 
 function GSendCommand(action, ...Args){

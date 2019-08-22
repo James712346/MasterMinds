@@ -34,7 +34,7 @@ function Connect(){
 
 $("#PinForm").submit(function(event) {
   event.preventDefault()
-  SendCommand("uu",$("#UserName").val())
+  SendCommand("uu",$("#FUserName").val())
   window.location = "/Game/" + $("#GamePin").val()
 })
 
@@ -55,7 +55,7 @@ $("#CreateForm").submit(function(event){
   if ($("[name='Grade']:checked").val() == "C"){
     var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
   } else{ var Values = $("input[name='Grade']:checked").val()}
-  SendCommand("uu",$("#UserName").val())
+  SendCommand("uu",$("#FUserName").val())
   SendCommand("cg", Values, false)
   Loading();
 })

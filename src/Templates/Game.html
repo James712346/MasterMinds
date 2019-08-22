@@ -1,6 +1,10 @@
 {% include "Header.html"%}
   <body class="Game">
-    <script>var Team = {{Lowbandwidth}};</script>
+    <script>
+    var Team = {{Lowbandwidth}};
+    var Colours = ["red", "orange", "yellow", "green",
+               "blue", "purple", "pink", "brown"].slice(0,{{AvailableColours}});
+    </script>
     <div id="Chat"></div>
     <h1 class="text-center m-3" id="Title"><<b>Master</b>Mind.io></h1>
     <div class="se-pre-con"></div>
@@ -18,7 +22,7 @@
       <h3>Answer</h3>
       <div class="row container" style="height:200px; margin:0px">
         {% for i in Code %}
-          <div class="col C">
+          <div class="col Ce">
             <div style="background-color:{{i}};height: 100%;"></div>
           </div>
         {% end %}
@@ -28,12 +32,12 @@
 
     <form class="text-center" id="GameForm" autocomplete="off">
       <h3 class="py-2">Code</h3>
-      <div class="row container" style="height:200px">
+      <div class="row container" style="height:300px">
         {% for i in Colours %}
           <div class="col C">
-            <button class="btn btn-default" name="UP" type="button"><i class="fas fa-arrow-up"></i></button>
+            <button class="btn btn-default" name="UP" type="button"><i class="fa fa-arrow-up"></i></button>
             <div class="Box" name="Box" style="background-color:{{i}}"></div>
-            <button class="btn btn-default" name="DOWN" type="button"><i class="fas fa-arrow-down"></i></button>
+            <button class="btn btn-default" name="DOWN" type="button"><i class="fa fa-arrow-down"></i></button>
           </div>
         {% end %}
       </div>
@@ -42,18 +46,19 @@
     </form>
     <div id="Results">
       <h3> Pass Attempts</h3>
-      <div class="container text-center" style="overflow-y: scroll;">
+      <div class="container text-center" id="codes" style="overflow-y: scroll;">
         {% for turn in Turns %}
           <div class="row ">
-            <div class="Number text-right">
-              {{ turn[2] }}
+            <div class="Number text-right WhiteResults">
+              {{ turn["RightPlace"] }}
             </div>
-            {% for colour in turn[1] %}
+            {% for colour in turn["Code"] %}
               <div class="col RC" style="background-color: {{ colour }} "></div>
             {% end %}
-            <div class="Number text-left">
-              {{ turn[3] }}
+            <div class="Number text-left BlackResults">
+              {{ turn["RightColour"] }}
             </div>
+            <p class="w-100 m-0"></p>
           </div>
         {% end %}
     </div>

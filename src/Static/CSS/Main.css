@@ -30,11 +30,11 @@ html, body {
 #GameForm .row {
   margin: auto;
 }
-#GameForm .C .Box {
-  height: 33%;
+#GameForm .C .Box, #GameForm .Ce .Box {
+  height: 50%;
   background-color: Red;
 }
-#GameForm .C i {
+#GameForm .C i, #GameForm .Ce i {
   height: 33%;
   font-size: 30px;
 }
@@ -52,25 +52,35 @@ html, body {
   grid-area: Title;
 }
 
-#Chat {
-  grid-area: Chat;
-}
 #Results{
   grid-area: results;
   text-align: center;
 }
-#Results::-webkit-scrollbar {
+.WhiteResults{
+    background: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+}
+.BlackResults{
+    background: black;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 15px;
+}
+#codes::-webkit-scrollbar {
     width: 6px;
     background-color: #F5F5F5;
 }
-#Results::-webkit-scrollbar-thumb {
+#codes::-webkit-scrollbar-thumb {
     background-color: #000000;
 }
-#Results::-webkit-scrollbar-track {
+#codes::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
     background-color: transparent;
 }
-
+.fa{
+  margin: 5px 0px;
+}
 .RC{
   height: 5px;
   margin: auto 10px;
@@ -89,7 +99,7 @@ footer{
   body.Game {
     display: grid;
     grid-template-columns: 33% 33% 33%;
-    grid-template-areas: "Chat Title UserForm" "Chat cheats UserForm" "Chat GameForm UserForm" "results results results" "footer footer footer";
+    grid-template-areas: "None Title UserForm" "None cheats UserForm" "GameForm  GameForm GameForm " "results results results" "footer footer footer";
   }
 
   #UserForm {
