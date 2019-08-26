@@ -55,16 +55,6 @@ function Loading() {
   $(".se-pre-con").fadeIn("slow");;
   $("#Card").fadeOut("slow");;
 }
-var rad = $("");
-for(var i = 0; i < rad.length; i++) {
-  rad[i].onclick = function () {
-    if(this == rad[0]) {
-      console.log(this.value)
-    } else {
-      console.log("Gay")
-    }
-  };
-}
 
 $("#customsetting").hide();
 $("[name='Grade']").click( function(){
