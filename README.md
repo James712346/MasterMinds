@@ -1,6 +1,6 @@
 # < MasterMind.io >
 
-![](https://img.shields.io/badge/MasterMind.io-0.0.1-brightgreen) ![](https://img.shields.io/badge/Python-3.7.4-brightgreen) ![](https://img.shields.io/badge/Tornado-6.0.3-brightgreen) ![](https://img.shields.io/badge/TinyDB-3.13-brightgreen)
+![](https://img.shields.io/badge/MasterMind.io-0.0.1-brightgreen)![](https://img.shields.io/badge/Python-3.7.4-brightgreen)![](https://img.shields.io/badge/Tornado-6.0.3-brightgreen)![](https://img.shields.io/badge/TinyDB-3.13-brightgreen)
 
 MasterMind.io is a Game Webserver that can be ran on a schools network where students can connect to the website and play with friends. MasterMind is a game in which students can use to improve thier problem-solving skills.
 
@@ -16,18 +16,15 @@ MasterMind.io is a Game Webserver that can be ran on a schools network where stu
 Install python 3.7 at https://www.python.org/downloads/
 Then by using pip You need to install TinyDB, Tornado
 
-```bash
-python -m pip install tornado```
+`python -m pip install tornado`
 
-```bash
-python -m pip install tinydb```
+`python -m pip install tinydb`
 
 Once that is install then you should download the src folder in this github repository and save it to a easy directory that you can reach in a command prompt
 
 ### Usage
 Open a command prompt in the same directory as the src folder and type to start the webserver
-```bash
-python webserver.py```
+`python webserver.py`
 
 To place the webserver under debugging mode use this command instead
 `python webserver.py -d` or `python webserver.py --debug`
