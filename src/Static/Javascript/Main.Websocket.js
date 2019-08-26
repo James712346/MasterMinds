@@ -1,12 +1,10 @@
 var ws;
 function Connect(){
   ws = new WebSocket("ws://"+window.location.host+"/ws");
-  if (!("GameGamews" in window)){
-    ws.onopen = function() {
-      SendCommand("cu", getCookie("id"))
-      $(".se-pre-con").fadeOut("slow");
-    };
-  }
+  ws.onopen = function() {
+    SendCommand("cu", getCookie("id"))
+    $(".se-pre-con").fadeOut("slow");
+  };
 
   ws.onmessage = function(evt) {
     var message = JSON.parse(evt.data)
@@ -63,7 +61,7 @@ $("button[name='Teams']").click(function(){
   if ($("[name='Grade']:checked").val() == "C"){
     var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
   } else{ var Values = $("input[name='Grade']:checked").val()}
-  SendCommand("uu",$("#UserName").val())
+  SendCommand("uu",$("#FUserName").val())
   SendCommand("cg", Values, true)
   Loading();
 })

@@ -1,13 +1,14 @@
 {% include "Header.html"%}
-  <body class="Game">
+  <body>
     <script>
     var Team = {{Lowbandwidth}};
     var Colours = ["red", "orange", "yellow", "green",
                "blue", "purple", "pink", "brown"].slice(0,{{AvailableColours}});
     </script>
-    <div id="Chat"></div>
+    <div class="Game">
     <h1 class="text-center m-3" id="Title"><<b>Master</b>Mind.io></h1>
     <div class="se-pre-con"></div>
+    <div id="GamePin" style="text-align: center;margin:1.85rem!important"><h3>GamePin: {{GamePin}}</h3></div>
     <form class="m-3" id="UserForm" autocomplete="off">
       <h3>
         {% if Username %}
@@ -44,18 +45,18 @@
       <button class="btn btn-primary font-weight-bold">SEND</button>
       <h4>Waiting for User...</h4>
     </form>
-    <div id="Results">
+    <div id="Results" class="my-5">
       <h3> Pass Attempts</h3>
-      <div class="container text-center" id="codes" style="overflow-y: scroll;">
+      <div class="container text-center" id="codes" style="overflow-y: scroll;height:400px">
         {% for turn in Turns %}
           <div class="row ">
-            <div class="Number text-right WhiteResults">
+            <div class="Number text-right BlackResults">
               {{ turn["RightPlace"] }}
             </div>
             {% for colour in turn["Code"] %}
               <div class="col RC" style="background-color: {{ colour }} "></div>
             {% end %}
-            <div class="Number text-left BlackResults">
+            <div class="Number text-left WhiteResults">
               {{ turn["RightColour"] }}
             </div>
             <p class="w-100 m-0"></p>
@@ -63,9 +64,22 @@
         {% end %}
     </div>
     </div>
+  </div>
+  <div class="row winningdiv">
+    <div class="col-sm-12 my-auto px-0">
+      <div class="container text-center">
+        <h1 class="display-3">Player,</h1>
+        <h1 class="display-1 player">  </h1>
+        <h1 class="display-3">Found out the code. Only taking</h1>
+        <h1 class="display-1 turns">turns</h1>
+        <h1 class="display-3">The Found Code</h1>
+        <div class="WinningCode"></div>
+        <a href="/" class="btn btn-primary">Go Back Home </a>
+      </div>
+    </div>
+  </div>
     <footer>
-      <div height="610"></div>
-      <div class="fixed-bottom text-center">
+      <div class="text-center">
         <p class="mb-0">©2019 James Prince SPS-IPT</p><a href="#">
           <p>Help</p></a>
         <p><a href="#"></a></p>
@@ -79,6 +93,5 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="/Static/Javascript/Main.js"></script>
     <script src="/Static/Javascript/Game.WebSocket.js"></script>
-    <script src="/Static/Javascript/Main.WebSocket.js"></script>
   </body>
 </html>

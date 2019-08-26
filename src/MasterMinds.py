@@ -53,15 +53,17 @@ class GameEngine():
         self.GamePin = CreateUniqID(5)
         self.req = query.GamePin == self.GamePin
         self.liveInput = [Colours[i] for i in range(0, Graded[1])]
-        GameTB.insert({"GamePin": self.GamePin, "Creator": UserID, "Code": [random.choice(Colours) for i in range(
+        GameTB.insert({"GamePin": self.GamePin, "Creator": UserID, "Code": [random.choice(Colours[:Graded[0]]) for i in range(
             0, Graded[1])], "AvailableColours": Graded[0], "Grade": Grade, "Creation": time.time(), "Playing": False, "Team": Team})
         Debug("Created Game with a GamePin of", self.GamePin)
         return self
 
-    def delete(self, UserID):
-        if UserID == GameTB.get(self.req)["Creator"]:
+    def delete(self, UserID = None):
+        if UserID == GameTB.get(self.req)["Creator"] or UserID == None:
             GameTB.remove(self.req)
+            TurnTB.remove(self.req)
             Objects.remove(self)
+            print("Gone")
             return True
         return False
 
@@ -96,11 +98,9 @@ class GameEngine():
 
     def AddUser(self, UserID, ws):
         if len(self.GetUsers()) < 5 or GameTB.get(self.req)["Team"] == 'Solo':
-            if self.PlayerPlaying:
-                self.PlayerPlaying = UserID
             UserTB.update({"LastLogin": time.time()},
                           query.UserID == UserID)
-            self.WS.append(ws)
+            self.WS.insert(0, ws)
             return True
         return False
 
@@ -108,33 +108,35 @@ class GameEngine():
         if UserID == self.PlayerPlaying:
             self.NextTurn()
         UserTB.update(query.UserID == UserID)
-        self.ws.remove(self.GetWebSockets(UserID, True))
+        self.WS.remove(self.GetWebSockets(UserID, True))
         return True
 
     def NextTurn(self):
         if not len(self.WS):
             self.PlayerPlaying = None
-        elif len(self.WS) - 1:
+        else:
             Debug(self.GetUsers(self.PlayerPlaying))
-            self.PlayerPlaying = self.GetUsers(self.PlayerPlaying)[self.GetUsers().index(self.PlayerPlaying)]
+            self.PlayerPlaying = self.GetUsers()[0]
+            self.WS.append(self.WS.pop(0))
         return self.PlayerPlaying
 
     def GetUsers(self, UserID=None):
         return [ws.UserID for ws in self.WS if ws.UserID != UserID]
 
     def GetWebSockets(self, UserID=None, iv=False):
-        return [User for User in self.WS if User.UserID == UserID] if iv else [User for User in self.WS if User.UserID != UserID]
+        return [ws for ws in self.WS if ws.UserID == UserID][0] if iv else [User for User in self.WS if User.UserID != UserID]
 
 
 def GetObject(GamePin):
     Debug("Finding", GamePin)
-    return [Object for Object in Objects if Object.GamePin == GamePin][0]
+    Found = [Object for Object in Objects if Object.GamePin == GamePin]
+    return Found[0] if Found else []
 
 
 def CreateUniqID(length):
     id = ''.join([random.choice(string.ascii_letters + string.digits)
                   for _ in range(1, length)])
-    while UserTB.search(query.UserID == id):
+    while UserTB.search(query.UserID == id) or GameTB.search(query.GamePin == id):
         id = ''.join([random.choice(string.ascii_letters + string.digits)
                       for n in range(1, length)])
     return id

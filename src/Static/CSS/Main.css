@@ -82,46 +82,66 @@ html, body {
   margin: 5px 0px;
 }
 .RC{
-  height: 5px;
+  height: 2.55rem;
   margin: auto 10px;
   background-color: red;
 }
-.Number{
-  font-size: 30px;
-  margin: 20px;
-}
+
 
 footer{
   grid-area: footer;
+  margin: auto;
+  width: 100%;
 }
 
+#GamePin{
+  grid-area: GamePin;
+}
+#Results{
+  max-height: auto;
+}
 @media (min-width: 1000px) {
-  body.Game {
+  .Game {
     display: grid;
     grid-template-columns: 33% 33% 33%;
-    grid-template-areas: "None Title UserForm" "None cheats UserForm" "GameForm  GameForm GameForm " "results results results" "footer footer footer";
+    grid-template-areas: "GamePin Title UserForm" "GamePin cheats UserForm" "GameForm  GameForm GameForm " "results results results";
   }
-
+  .Number{
+    font-size: 30px;
+    margin: 20px;
+  }
   #UserForm {
     text-align: right;
   }
-  #Results{
-    max-height: 400px;
+  .winningdiv{
+    height: 100%;
+  }
+  .RC{
+    margin: auto 10px;
   }
 }
 @media (max-width: 1000px) {
-  body.Game {
+  .C{
+    padding: 0px 1.5px;
+  }
+  .winningdiv{
+    margin: 20px 0;
+  }
+  .RC{
+    margin: auto 6px;
+  }
+  .Game {
     display: grid;
     margin: auto;
     grid-template-columns: 100%;
-    grid-template-areas: "Title" "UserForm" "GameForm" "results" "footer";
+    grid-template-areas: "Title" "UserForm" "GamePin" "cheats" "GameForm" "results";
   }
-
+  .Number{
+    font-size: 30px;
+    margin: 20px 0px;
+  }
   #UserForm {
     text-align: center;
-  }
-  #Results{
-    max-height: 200px;
   }
 }
 
@@ -148,4 +168,7 @@ footer{
 
 .blue {
   background-color: #5FC9F5;
+}
+.WinningCode{
+  margin: 10px;
 }
