@@ -4,66 +4,65 @@ from tinydb import TinyDB, Query
 import time
 import random
 import string
-
+#import the librarys used in this program
 Colours = ["red", "orange", "yellow", "green",
-           "blue", "purple", "pink", "brown"]
+           "blue", "purple", "pink", "brown"] #setup the colours
 
-Objects = []
+Objects = [] #set up a list for the GameObjects
 
-DB = TinyDB('Database.json')
+DB = TinyDB('Database.json') #starts up the database and tables used
 UserTB = DB.table("UserID")
 GameTB = DB.table("GamesPins")
 TurnTB = DB.table("Turns")
-query = Query()
+query = Query() #sets up the Query node
 
 
 def Debug(*input):
-    if "-d" in sys.argv[1:] or "--degug" in sys.argv[1:]:
-        if len(input) > 0:
-            print("# DEBUG: ", *input)
-        return True
-    return False
+    if "-d" in sys.argv[1:] or "--degug" in sys.argv[1:]: #if there is an argument of -d or --degug it will print any thing that is parsed to this function
+        if len(input) > 0: # this is if input is bigger than 0 or it won't print anything
+            print("# DEBUG: ", *input) #print "# DEBUG: " infront of the input value
+        return True #returning true that it is in debugging mode
+    return False #returning false that it isn't in debugging mode
 
 
 class GameEngine():
     def __init__(self, GamePin=None):
-        self.GamePin = GamePin
-        self.WS = []
-        self.req = query.GamePin == self.GamePin
+        self.GamePin = GamePin #Sets the GamePin to a class variable
+        self.WS = [] #set up the WebSockets list
+        self.req = query.GamePin == self.GamePin #sets up the request query for the game
         self.liveInput = Colours[:len(GameTB.get(
-            self.req)["Code"])] if GamePin else None
-        self.PlayerPlaying = None
-        Objects.append(self)
+            self.req)["Code"])] if GamePin else None #if GamePin is none then liveInput will be equal to None else if it not None then it will be set to length of the code containing Colours
+        self.PlayerPlaying = None #set the player variable that tells us whos go it is
+        Objects.append(self) #appends the GameObject to the Object list
 
-    def CreateGame(self, UserID, Grade=(4, 4), Team=False):
-        if isinstance(Grade, str):
+    def CreateGame(self, UserID, Grade=(4, 4), Team=False): #This creates a game with some default items
+        if isinstance(Grade, str): #if the Grade is a string
             try:
                 Graded = {"PrePrep-1": (2, 2), "2-3": (4, 4), "4-6": (6, 4),
-                          "7-9": (8, 4), "10-12": (12, 6)}[Grade]
+                          "7-9": (8, 4), "10-12": (12, 6)}[Grade] #fist try and get it from this dictornary
             except:
                 try:
-                    Graded = [int(G) for G in Grade.split(",")]
+                    Graded = [int(G) for G in Grade.split(",")] #or it try and split the values up if it in the form of "2,2"
                     Grade = "Custom"
                 except:
-                    Debug("Wrong Input")
+                    Debug("Wrong Input") #else it the wrong input
                     return False
         else:
-            Graded = Grade
+            Graded = Grade #if it isn't it assumed that its a list or turple
             Grade = "Custom"
-        self.GamePin = CreateUniqID(5)
-        self.req = query.GamePin == self.GamePin
-        self.liveInput = [Colours[i] for i in range(0, Graded[1])]
+        self.GamePin = CreateUniqID(5) #a QniqID is generated for the GamePin
+        self.req = query.GamePin == self.GamePin #the request query is reset to the new GamePin
+        self.liveInput = [Colours[i] for i in range(0, Graded[1])] #The live Input is set to length of the code containing Colours
         GameTB.insert({"GamePin": self.GamePin, "Creator": UserID, "Code": [random.choice(Colours[:Graded[0]]) for i in range(
-            0, Graded[1])], "AvailableColours": Graded[0], "Grade": Grade, "Creation": time.time(), "Playing": False, "Team": Team})
+            0, Graded[1])], "AvailableColours": Graded[0], "Grade": Grade, "Creation": time.time(), "Playing": False, "Team": Team}) #Info added to the database
         Debug("Created Game with a GamePin of", self.GamePin)
-        return self
+        return self #returns itself
 
-    def delete(self, UserID = None):
-        if UserID == GameTB.get(self.req)["Creator"] or UserID == None:
-            GameTB.remove(self.req)
+    def delete(self, UserID = None): #if the user Deletes the Game
+        if UserID == GameTB.get(self.req)["Creator"] or UserID == None: #the user must be the Creator or must be a None Value
+            GameTB.remove(self.req) #removes all items in all the tables that contain the GamePin
             TurnTB.remove(self.req)
-            Objects.remove(self)
-            print("Gone")
+            Objects.remove(self) #removes the GameOject from the Objects List
             return True
         return False
 

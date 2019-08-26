@@ -8,6 +8,7 @@
     <div class="Game">
     <h1 class="text-center m-3" id="Title"><<b>Master</b>Mind.io></h1>
     <div class="se-pre-con"></div>
+    {% include "Help.html"%}
     <div id="GamePin" style="text-align: center;margin:1.85rem!important"><h3>GamePin: {{GamePin}}</h3></div>
     <form class="m-3" id="UserForm" autocomplete="off">
       <h3>
@@ -80,9 +81,9 @@
   </div>
     <footer>
       <div class="text-center">
-        <p class="mb-0">©2019 James Prince SPS-IPT</p><a href="#">
-          <p>Help</p></a>
-        <p><a href="#"></a></p>
+        <p class="mb-0">©2019 James Prince SPS-IPT</p>
+        <a data-toggle="modal" data-target="#Help" href=""><p>Help</p></a>
+        </p>
       </div>
     </footer>
     <!-- Optional JavaScript-->

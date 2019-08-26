@@ -51,15 +51,17 @@ function SendCommand(action, ...Args){
 $("#CreateForm").submit(function(event){
   event.preventDefault();
   if ($("[name='Grade']:checked").val() == "C"){
-    var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
+    var Values = [$("[name='Colours']:checked").val(),$("[name='Length']:checked").val()]
+    console.log(Values)
   } else{ var Values = $("input[name='Grade']:checked").val()}
+  console.log("Sending",Values)
   SendCommand("uu",$("#FUserName").val())
   SendCommand("cg", Values, false)
   Loading();
 })
 $("button[name='Teams']").click(function(){
   if ($("[name='Grade']:checked").val() == "C"){
-    var Values = [$("[name='Colours']").val(),$("[name='Length']").val()]
+    var Values = [$("[name='Colours']:checked").val(),$("[name='Length']:checked").val()]
   } else{ var Values = $("input[name='Grade']:checked").val()}
   SendCommand("uu",$("#FUserName").val())
   SendCommand("cg", Values, true)

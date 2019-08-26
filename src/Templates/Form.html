@@ -4,6 +4,7 @@
   <div class="se-pre-con">
     <h1 class="text-center">&#60;<b>Master</b>Mind.io&#62;</h1>
   </div>
+  {% include "Help.html"%}
   <form autocomplete="off" id="UserForm" class="fixed-top container text-center mt-3 px-0" style="width: 390px;text-fonts: 10px;">
     <h3>
       {% if Username %}
@@ -37,9 +38,10 @@
     </div>
     <footer class="fixed-bottom text-center">
       <p class="mb-0">&copy;2019 James Prince SPS-IPT</p>
-      <a href="#">
+      <a data-toggle="modal" data-target="#Help" href="">
         <p>Help<p>
       </a>
+
     </footer>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
