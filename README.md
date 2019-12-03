@@ -33,12 +33,12 @@ To change the Port of the webserver user the command
 `python webserver.py -p 80` or `python webserver.py --port 80`
 
 ## Game Play
-###Setting up or Joining a Game
+### Setting up or Joining a Game
 To create a Game, click new game, select your grade level or use custom setting by choices custom as your grade level. After choosing a grade level you will need to set a username, or you will not be able to create a game
 
 To Join a game, you must provide a Game Pin found in the top left of your teacher’s or friends window, and you must also provide a username, or you will not be able to join the Game.
 
-###When Playing
+### When Playing
 When you first Join you may not be your turn, so wait until you see arrows appear and a send button
 
 You can use these arrows to roll through different colours or use the keyboard shortcuts where use the key “q” for the first box to change the colour in a positive direction or use the “a” key to change the colour in a negative direction. This pattern is continued along the keyboard with the next colour being
