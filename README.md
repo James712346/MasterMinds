@@ -7,7 +7,7 @@ MasterMind.io is a Game Webserver that can be ran on a schools network where stu
 ## Features
 
 - Mutiable users are allowed to play the same game
-- Realtime Updates or code
+- Realtime Updates between users
 - Easy to setup
 - Cheat Free
 - Debugging Mode
